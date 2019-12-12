@@ -1,9 +1,11 @@
 // To find the fuel required for a module, take its mass, divide by three, round down, and subtract 2
+// for each module mass, calculate its fuel and add it to the total.
+// Then, treat the fuel amount you just calculated as the input mass and repeat the process,
+// continuing until a fuel requirement is zero or negative.
 
 var fs = require("fs");
 
 let arr = [];
-let sum = 0;
 let fuelArr = [];
 
 try {
@@ -13,21 +15,24 @@ try {
   console.log("Error:", e.stack);
 }
 
-// for (let i = 0; i < arr.length - 1; i++) {
-//   let fuel = Math.floor(arr[i] / 3) - 2;
-//   sum = sum + fuel;
-// }
+const arrSum = arr => arr.reduce((a, b) => a + b, 0);
 
-function modCalculator(mass) {
-  let fuel = Math.floor(mass / 3) - 2;
-  console.log(`${mass} / 3 - 2 = ${fuel}`);
-  fuelArr.push(fuel);
-  if (fuel < 3) {
+const modCalculator = mass => {
+  if (mass <= 0) {
     return;
   }
+  let fuel = Math.floor(mass / 3) - 2;
+  if (fuel < 0) {
+    fuel = 0;
+  }
+  // console.log(`${mass} / 3 - 2 = ${fuel}`);
+  fuelArr.push(fuel);
   return modCalculator(fuel);
+};
+
+for (let i = 0; i < arr.length - 1; i++) {
+  // console.log("- - - - - - - - - -");
+  modCalculator(arr[i]);
 }
 
-modCalculator(74767);
-
-// console.log("Fuel required:", sum);
+console.log("Total fuel:", arrSum(fuelArr));
